@@ -1,0 +1,58 @@
+<project>
+
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+
+
+	<target name="compile">
+		<mkdir dir="build/classes"/>
+		<javac srcdir="src" destdir="build/classes"/>
+	</target>
+
+	<target name="jar">
+		<mkdir dir="build/jar"/>
+
+		<jar destfile="build/jar/ComputeImpl.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="computer.ComputerImpl"/>
+			</manifest>
+		</jar>
+
+		<jar destfile="build/jar/ClientEuclideanTsp.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="clients.ClientEuclideanTsp"/>
+			</manifest>
+		</jar>
+
+		<jar destfile="build/jar/ClientMandelbrotSet.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="clients.ClientMandelbrotSet"/>
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="runComputer">
+		<java jar="build/jar/ComputeImpl.jar" fork="true">
+			<jvmarg value="-Djava.security.policy=src/server.policy"/>
+
+			<jvmarg value="-Djava.rmi.server.hostname=${server_ip}"/>
+		</java>
+	</target>
+
+	<target name="runMandelbrot">
+		<java jar="build/jar/ClientMandelbrotSet.jar" fork="true">
+			<arg value="${server_ip}"/>
+			<jvmarg value="-Djava.security.policy=src/server.policy"/>
+		</java>
+	</target>
+
+	<target name="runTSP">
+		<java jar="build/jar/ClientEuclideanTsp.jar" fork="true">
+			<arg value="${server_ip}"/>
+			<jvmarg value="-Djava.security.policy=src/server.policy"/>
+		</java>
+	</target>
+
+
+</project>
