@@ -7,6 +7,6 @@ public interface RemoteComputer extends Remote {
 	public int PORT = 1099;
 	public String SERVICE_NAME = "Computer";
 	
-	public <T> Result<T> execute(Task<T> task) throws RemoteException ;
+	public Result execute(Task<? extends Result> task) throws RemoteException ;
 	
 }

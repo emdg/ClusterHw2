@@ -3,34 +3,46 @@ package space;
 import java.rmi.server.UnicastRemoteObject;
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Collections;
+import java.util.ArrayList;
 
 import api.Space;
 import api.Task;
 import api.Result;
 import api.RemoteComputer;
 import system.ComputerProxy;
+
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 
 public class SpaceImpl extends UnicastRemoteObject implements Space {
 
-	private LinkedBlockingQueue<Task> taskQueue;
-	private LinkedBlockingQueue<Result> resultQueue;
+	private List<Task<? extends Result>> taskList;
+	private List<Result<?>> resultList;
 	public SpaceImpl() throws RemoteException {
-		taskQueue = new LinkedBlockingQueue<Task>();
-		resultQueue = new LinkedBlockingQueue<Result>();
+		taskList = (List<Task<? extends Result>>) Collections.synchronizedList(new ArrayList<Task<? extends Result>>());
+		resultList = (List<Result<?>>) Collections.synchronizedList(new ArrayList<Result<?>>());
 	}
 
+	public <T extends Result<?>> void putAll(List<Task<T>> taskList) throws RemoteException {
+		// TODO Auto-generated method stub
+    	this.taskList.addAll(taskList);
+	}
+	
 
-
-    public void putAll ( List<Task> taskList ) throws RemoteException {
-    	this.taskQueue.addAll(taskList);
-    }
-
-    public Result take() throws RemoteException {
-    	return resultQueue.poll();
+    public ArrayList<Result<?>> takeResults(String jobID) throws RemoteException {
+    	ArrayList<Result<?>> resultsForID = new ArrayList<Result<?>>();
+    	synchronized(resultList){
+    		for (Result<?> result : resultList){
+    			if (result.getJobID().equals(jobID)){
+    				resultsForID.add(result);
+    			}
+    		}
+    	}
+    	
+    	resultList.removeAll(resultsForID);
+		return resultsForID;
     }
 
     public void exit()  {
@@ -39,9 +51,8 @@ public class SpaceImpl extends UnicastRemoteObject implements Space {
     
     public void register( RemoteComputer computer ) throws RemoteException {
         System.out.println("computer registered");
-        System.out.println(taskQueue);
 
-    	new ComputerProxy(computer, taskQueue, resultQueue).run();
+    	new ComputerProxy(computer, taskList, resultList).run();
     }
 
 
@@ -58,6 +69,11 @@ public class SpaceImpl extends UnicastRemoteObject implements Space {
 
         System.out.println("Space.main: Ready.");
     }
+
+
+
+
+
 
 
 }

@@ -23,11 +23,9 @@ public class Computer extends UnicastRemoteObject implements RemoteComputer {
 	}
 
 
-	public <T> Result<T> execute(Task<T> task){
-		long a = System.currentTimeMillis();
-		T tommyT = task.call();
-		long b = System.currentTimeMillis();
-		return new Result(tommyT, b-a);
+	public Result execute(Task<? extends Result> task){
+		System.out.println(this + " is running task: " + task);
+		return task.call();
 	}
 
 	public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException{
