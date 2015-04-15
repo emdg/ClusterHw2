@@ -10,25 +10,29 @@ import java.rmi.RemoteException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
-import tasks.TaskMandelbrotSet;
+import tasks.MandelJob;
+import tasks.MandelResult;
 
 /**
  *
  * @author Peter Cappello
  */
-public class ClientMandelbrotSet extends Client<Integer[][]>
+public class MandelClient extends Client<Integer[][], MandelResult>
 {
-    private static final double LOWER_LEFT_X = -2.0;
-    private static final double LOWER_LEFT_Y = -2.0;
-    private static final double EDGE_LENGTH = 4.0;
-    private static final int N_PIXELS = 256;
-    private static final int ITERATION_LIMIT = 64;
-    
-    public ClientMandelbrotSet(String domain) throws RemoteException, NotBoundException, MalformedURLException 
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final double LOWER_LEFT_X = -0.7510975859375;
+    private static final double LOWER_LEFT_Y = 0.1315680625;
+    private static final double EDGE_LENGTH = 0.01611;
+    private static final int N_PIXELS = 1024;
+    private static final int ITERATION_LIMIT = 512;
+
+    public MandelClient(String domain) throws RemoteException, NotBoundException, MalformedURLException 
     { 
-        super( "Mandelbrot Set Visualizer", domain,
-               new TaskMandelbrotSet( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH, N_PIXELS, 
-                                                       ITERATION_LIMIT) ); 
+        super( "Mandelbrot Set Visualizer", domain, new MandelJob( LOWER_LEFT_X, LOWER_LEFT_Y, EDGE_LENGTH, N_PIXELS, 
+                                                       ITERATION_LIMIT, 16, "mandel") ); 
     }
     
     /**
@@ -49,9 +53,10 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
         }
         
         
-        final ClientMandelbrotSet client = new ClientMandelbrotSet(domain);
+        final MandelClient client = new MandelClient(domain);
         client.begin();
-        Integer[][] value = client.runTask();
+        Integer[][] value = client.processJob();
+        System.out.println(value.length);
         client.add( client.getLabel( value ) );
         client.end();
     }
@@ -60,6 +65,9 @@ public class ClientMandelbrotSet extends Client<Integer[][]>
     {
         final Image image = new BufferedImage( N_PIXELS, N_PIXELS, BufferedImage.TYPE_INT_ARGB );
         final Graphics graphics = image.getGraphics();
+        
+        
+        
         for ( int i = 0; i < counts.length; i++ )
             for ( int j = 0; j < counts.length; j++ )
             {

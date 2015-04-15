@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+
 public class TaskEuclideanTsp implements Task<List<Integer>> {
 
 	private double[][] cities;
@@ -16,22 +18,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>> {
 	}
 
 	
-	public double calculateTrip(int[] bestPermutation){
-		double tripLength = 0;
-		double[] current = this.cities[bestPermutation[0]];
 
-		for (int i = 1; i < bestPermutation.length; i++){
-			double[] next = this.cities[bestPermutation[i]];
-			tripLength += (next[0] - current[0]) + (next[1] - current[1]);
-			current = next;
-		}
-		
-		double[] first = this.cities[bestPermutation[0]];
-		
-		tripLength += (first[0] - current[0] + first[1] - current[1]);
-		
-		return tripLength;
-	}
 
 	 public List<List<Integer>> generatePerm(List<Integer> original) {
 	     if (original.size() == 0) { 
@@ -71,7 +58,7 @@ public class TaskEuclideanTsp implements Task<List<Integer>> {
 	 
 	
 	@Override
-	public List<Integer> execute() {
+	public List<Integer> call() {
 		List<List<Integer>> permutations = generatePerm(this.cityPerm);
 		List<Integer> besttrip = permutations.get(0);
 		double bestScore = Integer.MAX_VALUE;

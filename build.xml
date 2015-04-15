@@ -13,15 +13,15 @@
 	<target name="jar">
 		<mkdir dir="build/jar"/>
 
-		<jar destfile="build/jar/ComputeImpl.jar" basedir="build/classes">
+		<jar destfile="build/jar/Computer.jar" basedir="build/classes">
 			<manifest>
-				<attribute name="Main-Class" value="computer.ComputerImpl"/>
+				<attribute name="Main-Class" value="system.Computer"/>
 			</manifest>
 		</jar>
 
-		<jar destfile="build/jar/ClientEuclideanTsp.jar" basedir="build/classes">
+		<jar destfile="build/jar/TSPClient.jar" basedir="build/classes">
 			<manifest>
-				<attribute name="Main-Class" value="clients.ClientEuclideanTsp"/>
+				<attribute name="Main-Class" value="clients.TSPClient"/>
 			</manifest>
 		</jar>
 
@@ -30,15 +30,33 @@
 				<attribute name="Main-Class" value="clients.ClientMandelbrotSet"/>
 			</manifest>
 		</jar>
+
+
+		<jar destfile="build/jar/Space.jar" basedir="build/classes">
+			<manifest>
+				<attribute name="Main-Class" value="space.SpaceImpl"/>
+			</manifest>
+		</jar>
 	</target>
 
 	<target name="runComputer">
-		<java jar="build/jar/ComputeImpl.jar" fork="true">
+		<java jar="build/jar/Computer.jar" fork="true">
 			<jvmarg value="-Djava.security.policy=src/server.policy"/>
-
-			<jvmarg value="-Djava.rmi.server.hostname=${server_ip}"/>
+			<jvmarg value="-Djava.rmi.server.hostname=${space_ip}"/>
 		</java>
 	</target>
+
+
+
+	<target name="runSpace">
+		<java jar="build/jar/Space.jar" fork="true">
+			<jvmarg value="-Djava.security.policy=src/server.policy"/>
+
+			<jvmarg value="-Djava.rmi.server.hostname=${space_ip}"/>
+		</java>
+	</target>
+
+
 
 	<target name="runMandelbrot">
 		<java jar="build/jar/ClientMandelbrotSet.jar" fork="true">
@@ -48,8 +66,8 @@
 	</target>
 
 	<target name="runTSP">
-		<java jar="build/jar/ClientEuclideanTsp.jar" fork="true">
-			<arg value="${server_ip}"/>
+		<java jar="build/jar/TSPClient.jar" fork="true">
+			<arg value="${space_ip}"/>
 			<jvmarg value="-Djava.security.policy=src/server.policy"/>
 		</java>
 	</target>

@@ -9,34 +9,52 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import tasks.TaskEuclideanTsp;
+
+import api.Job;
+import api.Result;
+import tasks.TSPJob;
+import tasks.TSPResult;
 
 /**
  *
  * @author Peter Cappello
  */
-public class ClientEuclideanTsp extends Client<List<Integer>>
+public class TSPClient extends Client<List<Integer>, TSPResult>
 {
-    private static final int NUM_PIXALS = 600;
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final int NUM_PIXALS = 600;
     private static final double[][] CITIES = 
-    {
-        { 6, 3 },
-        { 2, 2 },
-        { 5, 8 },
-        { 1, 5 },
-        { 1, 6 },
-        { 2, 7 },
-        { 2, 8 },
-        { 6, 5 },
-        { 1, 3 },
-        { 6, 6 }
+    	{
+    	{ 1, 1 },
+    	{ 8, 1 },
+    	{ 8, 8 },
+    	{ 1, 8 },
+    	{ 2, 2 },
+    	{ 7, 2 },
+    	{ 7, 7 },
+    	{ 2, 7 },
+    	{ 3, 3 },
+    	{ 6, 3 },
+    	{ 6, 6 },
+    	{ 3, 6 }
     };
+
     
-    public ClientEuclideanTsp(String domain) throws RemoteException, NotBoundException, MalformedURLException
+    
+    public TSPClient(String domain) throws RemoteException, NotBoundException, MalformedURLException
     { 
-        super( "Euclidean TSP", domain, new TaskEuclideanTsp( CITIES ) ); 
+        super( "Euclidean TSP", domain, new TSPJob(CITIES, "eucjob", 10)); 
     }
     
     public static void main( String[] args ) throws Exception
@@ -52,16 +70,16 @@ public class ClientEuclideanTsp extends Client<List<Integer>>
         
         	
         
-        final ClientEuclideanTsp client = new ClientEuclideanTsp(domain);
+        final TSPClient client = new TSPClient(domain);
         client.begin();
-        final List<Integer> value = client.runTask();
+        final List<Integer> value = client.processJob();
         client.add( client.getLabel( value.toArray( new Integer[0] ) ) );
         client.end();
     }
     
     public JLabel getLabel( final Integer[] tour )
     {
-        Logger.getLogger( ClientEuclideanTsp.class.getCanonicalName() ).log(Level.INFO, tourToString( tour ) );
+        Logger.getLogger( TSPClient.class.getCanonicalName() ).log(Level.INFO, tourToString( tour ) );
 
         // display the graph graphically, as it were
         // get minX, maxX, minY, maxY, assuming they 0.0 <= mins
