@@ -27,7 +27,7 @@
 
 		<jar destfile="build/jar/ClientMandelbrotSet.jar" basedir="build/classes">
 			<manifest>
-				<attribute name="Main-Class" value="clients.ClientMandelbrotSet"/>
+				<attribute name="Main-Class" value="clients.MandelClient"/>
 			</manifest>
 		</jar>
 
