@@ -58,7 +58,7 @@
 
 
 
-	<target name="runMandelbrot">
+	<target name="runMandel">
 		<java jar="build/jar/ClientMandelbrotSet.jar" fork="true">
 			<arg value="${server_ip}"/>
 			<jvmarg value="-Djava.security.policy=src/server.policy"/>
