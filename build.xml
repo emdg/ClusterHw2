@@ -2,11 +2,13 @@
 
 	<target name="clean">
 		<delete dir="build"/>
+        <delete dir="imgs"/>
 	</target>
 
 
 	<target name="compile">
 		<mkdir dir="build/classes"/>
+        <mkdir dir="imgs"/>
 		<javac srcdir="src" destdir="build/classes"/>
 	</target>
 
